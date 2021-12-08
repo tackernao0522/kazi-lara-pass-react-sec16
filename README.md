@@ -347,3 +347,112 @@ class RegisterRequest extends FormRequest
     }
 }
 ```
+
+## 223 Laravel Passport Authentication : Registration Part2
+
++ `AuthController.php`を編集<br>
+
+```
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\RegisterRequest;
+use App\Models\User;
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+
+class AuthController extends Controller
+{
+    public function login(Request $request)
+    {
+        try {
+            if (Auth::attempt($request->only('email', 'password'))) {
+                $user = Auth::user();
+                $token = $user->createToken('app')->accessToken;
+
+                return response([
+                    'message' => "Successfully Login",
+                    'token' => $token,
+                    'user' => $user
+                ], 200); // Status Code
+            }
+        } catch (Exception $exception) {
+            return response([
+                'message' => $exception->getMessage(),
+            ], 400);
+        }
+
+        return response([
+            'message' => 'Invalid Email Or Password',
+        ], 401);
+    }
+
+    public function register(RegisterRequest $request)
+    {
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+            $token = $user->createToken('app')->accessToken;
+
+            return response([
+                'message' => 'Registration Successfull',
+                'token' => $token,
+                'user' => $user,
+            ], 200);
+        } catch (Exception $exception) {
+            return response([
+                'message' => $exception->getMessage(),
+            ], 400);
+        }
+    }
+}
+```
+
++ `Postman(POST) localhost/api/register`を入力<br>
+
++ `BODYタブを選択 form-dataを選択`<br>
+
++ `KEYに name email password password_confirmation`を入力<br>
+
++ `各KEYのVALUEを入力`<br>
+
++ `Send`する<br>
+
++ 登録完了する<br>
+```
+{
+    "message": "Registration Successfull",
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzhhMThiZjMwNjVhN2ZhNmJjMDQxNzIxMjQ1ZTNjOGIwNGFiM2EzYjczNzZmZmM3MDM5OTcyNThlMTE5Y2UzZmNlMTY3ZTUyYWUwMjk3ZTIiLCJpYXQiOjE2Mzg5MzQ0MjcuNTk3NTc2LCJuYmYiOjE2Mzg5MzQ0MjcuNTk3NTg3LCJleHAiOjE2NzA0NzA0MjcuNTI5MjgxLCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.U-9JRe5dRQNDqrCMPXvC2YyuYNZUtvAXfiSHqFY9OLIfpbn8SOicFf5zksZB7HKzTH7_MlIh-fofQT_EAM01LDyGu-EOwx5JVdpyect1S7w7Hj-ZNkVnF_k_5ya1uRNWFAmdmNlgZ7_AEXtxdLVfrvRBcP7sYuC7JZaORT5aqXk5CYuSBLaIx94zoIVJ_u64wEdKdMpLZbRLEbzmkaBeCNk05g2fJJdWEwEgB2ycRTVPLvhe-7FRgUbA8g_N7NhifqMccmW1eWb8rvwShro6EsibmAQaMVq2igqVWOyqCwk-lPRQvWpf4N9KK0gUsWt4FYNH9poYYFUEMw5xnscpXb4Zo70q0uGb7bY2rFW16asXmxC1Bz5arhXOfqQnZvZG_oDT9MuaFYBYpBZ4R1ezvecaCrLo0MPWjdN0NxjNnWzNp37s7qXZObFZUnUzSQ-IBGrbD3huo03MNASm3Z3aPQ7hvMegLJdRAiaLh7QxSIWEh5uQek5sziyQuY4n_3WF7IkTGYEJYrtpZPyhVua368pknn2s3jZjC-hAApMn1fPs7sbMBs_Pcd2M9YSAP_NPrdM70cNYe8pMCYtwUUCEpEnaD7bb3DvXBFIYQlvAsIBXzmjlyDkAsOS3jpsybA-CKi8FU3FLEDkHC-g1WaM7u5otxUYGJqWG89zw8erXPcI",
+    "user": {
+        "name": "Takaki Nakamura",
+        "email": "takaki55730317@gmail.com",
+        "updated_at": "2021-12-08T03:33:47.000000Z",
+        "created_at": "2021-12-08T03:33:47.000000Z",
+        "id": 1
+    }
+}
+```
+
++ `ログインが成功するか確認する`<br>
+
+```
+{
+    "message": "Successfully Login",
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZTJjM2RlYzAxMTVlNWY2Yjk0OTdiMjkzMTk3YWRjNGViM2MxOTViYzcwMmEyNDI3YmRkODliMDk0MzVlNzA4OWE5ZWI0ZjA1N2QwMGNlYzgiLCJpYXQiOjE2Mzg5MzQ2ODAuMzg3NjQ4LCJuYmYiOjE2Mzg5MzQ2ODAuMzg3NjgzLCJleHAiOjE2NzA0NzA2ODAuMzA4MDY0LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.aCtel8yJNLk99g0B9P6wsfkiU1hUlpUZnil4xrmWkYjiS5XTBz_aOLzhonL98BnW51TIX7X3QAA8o-4zxvfsi0U0mQw6EC8v3RyENX7L9h5W2A52ho71rfWf3eGJ6JiuzQeBfinM22GDimBxgdPTafT38vkhWTt0Lphzf7jPat4dTGnTJXDj_99Mw4PXRCqWnGPbFy1fI5VvAI83WhrYFT5ClPr528nfab6PGbLpD8C4wePQQF5N4gIkF6hl-HShp1eHH-ESpkwlydi87TJdrmNG1AW4FHqwTNKcoYlxMGR8_paqmpBSqpYolY2eLJCo-dpBvJT199mxW81altQbeiE741JB2EacketWZmYn9YoWRIDUpDgJmhjL2Aq3EnLDa-lp6siVewfjx5FU0Gmg95jCpB3Kpm4AajNrwvtDVDY92MZXEY0fJ1fblJkULKu9oikMF4cKeS3BTwAvzCY24ZcLluOd2pxfekafBrSIkXkU3sZ9b2tA6GEYLLbOpzMicxOdsIgjkHkKsMEMoRrfdjnipDPkzsf5hodVSriNBElssNP9Xyjq4j27_7o4Rul7YKAOTi-tfYFQW0knnRzNcgQDKCFgLAvf2IvaF-jcqeh2CPTr_vTFsbwv1o7Co7IQJr4mcW0hH1wcYTy52Gngj15C3mWbpwGqcazVe4hhJ6E",
+    "user": {
+        "id": 1,
+        "name": "Takaki Nakamura",
+        "email": "takaki55730317@gmail.com",
+        "email_verified_at": null,
+        "created_at": "2021-12-08T03:33:47.000000Z",
+        "updated_at": "2021-12-08T03:33:47.000000Z"
+    }
+}
+```
