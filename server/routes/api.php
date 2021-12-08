@@ -10,3 +10,6 @@ use Illuminate\Support\Facades\Route;
 
 // Login Routes
 Route::post('/login', [AuthController::class, 'login']);
+
+// Register Routes
+Route::post('/register', [AuthController::class, 'register']);
