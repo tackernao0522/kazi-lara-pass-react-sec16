@@ -276,3 +276,74 @@ class AuthController extends Controller
     }
 }
 ```
+
+## Laravel Passport Authentication : Registration Part1
+
++ `Postman(POST) localhost/api/login`を入力<br>
+
++ `BODYタブのform-data`を選択<br>
+
++ `KEYにemail と passwordと入れる`<br>
+
++ `emailのVALUEとpasswordのVALUE`を入れる<br>
+
++ Sendしてみると(まだユーザー登録していない為) `Invalid Email Or Password`とエラーが出力される<br>
+
++ `routes/api.php`を編集<br>
+
+```
+<?php
+
+use App\Http\Controllers\AuthController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+// Login Routes
+Route::post('/login', [AuthController::class, 'login']);
+
+// Register Routes
+Route::post('/register', [AuthController::class, 'register']);
+```
+
++ `$ php artisan make:request RegisterRequest`を実行<br>
+
++ `RegisterRequest.php`を編集<br>
+
+```
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class RegisterRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            'name' => 'required|max:55',
+            'email' => 'required|unique:users|min:5|max:60',
+            'password' => 'required|min:6|confirmed',
+        ];
+    }
+}
+```

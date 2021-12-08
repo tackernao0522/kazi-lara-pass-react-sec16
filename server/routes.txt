@@ -3,6 +3,7 @@
 +--------+----------+-----------------------------------------+-----------------------------------+---------------------------------------------------------------------------+------------+
 |        | GET|HEAD | /                                       |                                   | Closure                                                                   | web        |
 |        | POST     | api/login                               |                                   | App\Http\Controllers\AuthController@login                                 | api        |
+|        | POST     | api/register                            |                                   | App\Http\Controllers\AuthController@register                              | api        |
 |        | POST     | oauth/authorize                         | passport.authorizations.approve   | Laravel\Passport\Http\Controllers\ApproveAuthorizationController@approve  | web        |
 |        |          |                                         |                                   |                                                                           | auth       |
 |        | GET|HEAD | oauth/authorize                         | passport.authorizations.authorize | Laravel\Passport\Http\Controllers\AuthorizationController@authorize       | web        |
@@ -13,9 +14,9 @@
 |        |          |                                         |                                   |                                                                           | auth       |
 |        | POST     | oauth/clients                           | passport.clients.store            | Laravel\Passport\Http\Controllers\ClientController@store                  | web        |
 |        |          |                                         |                                   |                                                                           | auth       |
-|        | PUT      | oauth/clients/{client_id}               | passport.clients.update           | Laravel\Passport\Http\Controllers\ClientController@update                 | web        |
-|        |          |                                         |                                   |                                                                           | auth       |
 |        | DELETE   | oauth/clients/{client_id}               | passport.clients.destroy          | Laravel\Passport\Http\Controllers\ClientController@destroy                | web        |
+|        |          |                                         |                                   |                                                                           | auth       |
+|        | PUT      | oauth/clients/{client_id}               | passport.clients.update           | Laravel\Passport\Http\Controllers\ClientController@update                 | web        |
 |        |          |                                         |                                   |                                                                           | auth       |
 |        | GET|HEAD | oauth/personal-access-tokens            | passport.personal.tokens.index    | Laravel\Passport\Http\Controllers\PersonalAccessTokenController@forUser   | web        |
 |        |          |                                         |                                   |                                                                           | auth       |
