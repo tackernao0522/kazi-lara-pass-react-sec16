@@ -2,8 +2,7 @@
 | Domain | Method   | URI                                     | Name                              | Action                                                                    | Middleware |
 +--------+----------+-----------------------------------------+-----------------------------------+---------------------------------------------------------------------------+------------+
 |        | GET|HEAD | /                                       |                                   | Closure                                                                   | web        |
-|        | GET|HEAD | api/user                                |                                   | Closure                                                                   | api        |
-|        |          |                                         |                                   |                                                                           | auth:api   |
+|        | POST     | api/login                               |                                   | App\Http\Controllers\AuthController@login                                 | api        |
 |        | POST     | oauth/authorize                         | passport.authorizations.approve   | Laravel\Passport\Http\Controllers\ApproveAuthorizationController@approve  | web        |
 |        |          |                                         |                                   |                                                                           | auth       |
 |        | GET|HEAD | oauth/authorize                         | passport.authorizations.authorize | Laravel\Passport\Http\Controllers\AuthorizationController@authorize       | web        |
