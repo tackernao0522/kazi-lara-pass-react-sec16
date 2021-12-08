@@ -2,6 +2,7 @@
 | Domain | Method   | URI                                     | Name                              | Action                                                                    | Middleware |
 +--------+----------+-----------------------------------------+-----------------------------------+---------------------------------------------------------------------------+------------+
 |        | GET|HEAD | /                                       |                                   | Closure                                                                   | web        |
+|        | POST     | api/forgetpassword                      |                                   | App\Http\Controllers\ForgetPasswordController@forgetPassword              | api        |
 |        | POST     | api/login                               |                                   | App\Http\Controllers\AuthController@login                                 | api        |
 |        | POST     | api/register                            |                                   | App\Http\Controllers\AuthController@register                              | api        |
 |        | POST     | oauth/authorize                         | passport.authorizations.approve   | Laravel\Passport\Http\Controllers\ApproveAuthorizationController@approve  | web        |
